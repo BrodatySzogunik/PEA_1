@@ -32,11 +32,14 @@ void Test::runTest() {
     int testCount ;
     int instanceSize;
     int optimalPathSize;
+
+    std::vector<bool> vertexes;
     std::vector<int> optimalPath;
     int vertex;
 
     while(!configfile.eof()){
         optimalPath.clear();
+        vertexes.clear();
         configfile >> fileName;
         configfile >> testCount;
         configfile >> instanceSize;
@@ -47,6 +50,11 @@ void Test::runTest() {
             optimalPath.push_back(vertex);
         }
         optimalPath[instanceSize+1] = optimalPath[0];
+
+        for(int i = 1 ; i <= instanceSize ; i++){
+            vertexes.push_back(false);
+        }
+        vertexes[0] = true;
 
         outputFile << fileName<<" ";
         outputFile << testCount<<" ";
@@ -62,7 +70,8 @@ void Test::runTest() {
         for(int i = 0 ; i < testCount ; i++)
         {
             timer.start();
-            result = bruteForce.bruteForceAlgorithm(0);
+            result = std::to_string(bruteForce.heldKarp(0, 0,vertexes ));
+//            result = bruteForce.bruteForceAlgorithm(0);
             timer.stop();
             outputFile << result << ";\t" << timer.getTime(Microseconds);
             outputFile << "\n";

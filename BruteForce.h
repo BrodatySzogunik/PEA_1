@@ -5,6 +5,7 @@
 #ifndef BRUTEFORCE_BRUTEFORCE_H
 #define BRUTEFORCE_BRUTEFORCE_H
 #include <iostream>
+#include <vector>
 
 class BruteForce {
 
@@ -15,9 +16,10 @@ public:
     void LoadFileTSP(std::string &filename);
 //    void LoadFileATSP(std::string &filename);
     std::string bruteForceAlgorithm(int start);
+    int heldKarp(int start, int actualVertex, std::vector<bool> remainingVertexes, int actualShortestPath = INT32_MAX, int actualPath = 0 );
 private:
     int** neighborhoodMatrix;
-    int* vertexNumber = 0 ;
+    int* vertexNumber = new int(0) ;
     std::string *fileName;
 
 };
