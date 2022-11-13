@@ -3,7 +3,7 @@
 //
 
 #include "Test.h"
-#include "BruteForce.h"
+#include "TravelingSalesman.h"
 #include "Timer.h"
 #include <iostream>
 #include <fstream>
@@ -11,8 +11,8 @@
 
 
 void Test::runTest() {
-
-    BruteForce bruteForce;
+    srand( time( NULL ) );
+    TSP TravelingSalesman;
     Timer timer;
 
     std::string result;
@@ -40,6 +40,7 @@ void Test::runTest() {
     while(!configfile.eof()){
         optimalPath.clear();
         vertexes.clear();
+        TravelingSalesman.shortestPath.clear();
         configfile >> fileName;
         configfile >> testCount;
         configfile >> instanceSize;
@@ -56,6 +57,12 @@ void Test::runTest() {
         }
         vertexes[0] = true;
 
+        for(int i = 1 ; i < instanceSize ; i++){
+            TravelingSalesman.shortestPath.push_back(i);
+        }
+
+
+
         outputFile << fileName<<" ";
         outputFile << testCount<<" ";
         outputFile << instanceSize<<" ";
@@ -66,14 +73,19 @@ void Test::runTest() {
         outputFile<<"}";
 
         outputFile << "\n";
-            bruteForce.ReadFromFile(fileName);
+        TravelingSalesman.ReadFromFile(fileName);
+
         for(int i = 0 ; i < testCount ; i++)
         {
+
             timer.start();
-            result = std::to_string(bruteForce.heldKarp(0, 0,vertexes ));
-//            result = bruteForce.bruteForceAlgorithm(0);
+            result = std::to_string(TravelingSalesman.heldKarp(0, 0,vertexes ));
             timer.stop();
-            outputFile << result << ";\t" << timer.getTime(Microseconds);
+            outputFile << std::to_string(0) << " , ";
+            for(int i = 0 ; i < instanceSize ; i++){
+                outputFile << std::to_string(TravelingSalesman.shortestPath[i]) << " , ";
+            }
+            outputFile <<" ; "<< result << ";\t" << timer.getTime(Microseconds);
             outputFile << "\n";
         }
 

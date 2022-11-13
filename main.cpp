@@ -1,5 +1,5 @@
 #include <iostream>
-#include "BruteForce.h"
+#include "TravelingSalesman.h"
 #include "Test.h"
 
 

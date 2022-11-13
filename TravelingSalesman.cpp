@@ -2,12 +2,12 @@
 // Created by kmord on 15.10.2022.
 //
 
-#include "BruteForce.h"
+#include "TravelingSalesman.h"
 #include "Timer.h"
 #include <iostream>
 #include <bits/stdc++.h>
 
-void BruteForce::ReadFromFile(std::string filename) {
+void TSP::ReadFromFile(std::string filename) {
     std::string fileExt = filename.substr(filename.find_last_of(".") + 1);
     if (fileExt != "txt" && fileExt != "tsp" && fileExt != "atsp") //dodanie do nazwy pliku rozszerzenia .txt gdy go nie ma
     {
@@ -16,17 +16,49 @@ void BruteForce::ReadFromFile(std::string filename) {
     fileExt = filename.substr(filename.find_last_of(".") + 1);
 
     if (fileExt == "txt") {
-        return BruteForce::LoadFileTXT(filename);
+        return TSP::LoadFileTXT(filename);
     }
 
     if (fileExt == "tsp") {
-        return BruteForce::LoadFileTSP(filename);
+        return TSP::LoadFileTSP(filename);
     }
 }
+std::string TSP::PrintInstance(){
+    std::string result = "";
+    for(int i = 0 ; i < *this->vertexNumber; i++){
+        for(int j = 0 ; j < *this->vertexNumber ; j++){
+            std::cout << this -> neighborhoodMatrix[i][j] <<"\t";
+        }
+        std::cout << std::endl;
+    }
+    return result;
+}
+void TSP::GenerateRandomInstance(int vertexNumber){
+    if (*this->vertexNumber != 0) {
+        for (int i = 0; i < *this->vertexNumber; i++)
+            delete this->neighborhoodMatrix[i];
+        delete[] this->neighborhoodMatrix;
+        this->neighborhoodMatrix = NULL;
+        this->vertexNumber = 0;
+    }
 
 
+    this -> vertexNumber = new int(vertexNumber);
 
-std::string BruteForce::bruteForceAlgorithm(int start){
+    this->neighborhoodMatrix = new int*[vertexNumber];
+
+    for (int i = 0; i < vertexNumber; i++)
+        this -> neighborhoodMatrix[i] = new int[vertexNumber];
+
+    for(int i = 0 ; i < vertexNumber; i++){
+        for(int j = 0 ; j < vertexNumber ; j++){
+            this -> neighborhoodMatrix[i][j] = rand() % 100 + 1;
+        }
+    }
+
+}
+
+std::string TSP::bruteForceAlgorithm(int start){
     std::vector<int> vertex;
     std::vector<int> shortestPathVertex;
     Timer timer;
@@ -72,28 +104,35 @@ std::string BruteForce::bruteForceAlgorithm(int start){
 
 
 
-int BruteForce::heldKarp(int start, int actualVertex, std::vector<bool> remainingVertexes, int actualShortestPath , int actualPath ) {
+int TSP::heldKarp(int start, int actualVertex, std::vector<bool> remainingVertexes, int actualShortestPath , int actualPath , int recLevel) {
+    int cost;
 
-    std::vector<bool> bufor;
     if(std::find(remainingVertexes.begin(),remainingVertexes.end(),false) == remainingVertexes.end()){
+        this -> shortestPath[recLevel] = start;
         return actualPath + this -> neighborhoodMatrix[actualVertex][start];
+
     }else{
         for(int i = 0 ; i < remainingVertexes.size(); i++){
-            if(!remainingVertexes[i]){
-                if(actualPath + this->neighborhoodMatrix[actualVertex][i] < actualShortestPath){
-                    bufor = remainingVertexes;
-                    bufor[i] = true;
-                    std::next_permutation(bufor.begin(), bufor.end());
-                    actualShortestPath = std::min(heldKarp(start, i,bufor,actualShortestPath,actualPath + this->neighborhoodMatrix[actualVertex][i] ), actualShortestPath)   ;
-                    bufor.clear();
+            if(remainingVertexes[i])
+               continue;
+
+            cost = this->neighborhoodMatrix[actualVertex][i];
+
+            if(actualPath + cost < actualShortestPath){
+                remainingVertexes[i] = true;
+                int heldKarpResult = heldKarp(start, i,remainingVertexes,actualShortestPath,actualPath + cost ,recLevel+1);
+                if(heldKarpResult < actualShortestPath){
+                    actualShortestPath = heldKarpResult;
+                    this -> shortestPath[recLevel] = i;
                 }
+                remainingVertexes[i] = false;
             }
         }
         return actualShortestPath;
     }
 }
 
-void BruteForce::LoadFileTXT(std::string & filename)
+void TSP::LoadFileTXT(std::string & filename)
 {
     std::fstream File;
     File.open(filename, std::ios::in);
@@ -137,7 +176,7 @@ void BruteForce::LoadFileTXT(std::string & filename)
 }
 
 
-void BruteForce::LoadFileTSP(std::string & filename)
+void TSP::LoadFileTSP(std::string & filename)
 {
     std::ifstream File;
     File.open(filename, std::ios::in);
@@ -146,7 +185,7 @@ void BruteForce::LoadFileTSP(std::string & filename)
 
     }
 
-    if (this->vertexNumber != 0) {
+    if (*this->vertexNumber != 0) {
         for (int i = 0; i < *this->vertexNumber; i++)
             delete this->neighborhoodMatrix[i];
         delete[] this->neighborhoodMatrix;
@@ -345,7 +384,7 @@ void BruteForce::LoadFileTSP(std::string & filename)
     }
 }
 //
-//void BruteForce::LoadFileATSP(std::string & filename)
+//void TSP::LoadFileATSP(std::string & filename)
 //{
 //    ifstream File;
 //    File.open(filename, ios::in);
