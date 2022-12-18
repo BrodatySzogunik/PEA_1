@@ -104,7 +104,7 @@ std::string TSP::bruteForceAlgorithm(int start){
 
 
 
-int TSP::heldKarp(int start, int actualVertex, std::vector<bool> remainingVertexes, int actualShortestPath , int actualPath , int recLevel) {
+int TSP::branchAndBound(int start, int actualVertex, std::vector<bool> remainingVertexes, int actualShortestPath , int actualPath , int recLevel) {
     int cost;
 
     if(std::find(remainingVertexes.begin(),remainingVertexes.end(),false) == remainingVertexes.end()){
@@ -120,7 +120,8 @@ int TSP::heldKarp(int start, int actualVertex, std::vector<bool> remainingVertex
 
             if(actualPath + cost < actualShortestPath){
                 remainingVertexes[i] = true;
-                int heldKarpResult = heldKarp(start, i,remainingVertexes,actualShortestPath,actualPath + cost ,recLevel+1);
+                int heldKarpResult = branchAndBound(start, i, remainingVertexes, actualShortestPath, actualPath + cost,
+                                                    recLevel + 1);
                 if(heldKarpResult < actualShortestPath){
                     actualShortestPath = heldKarpResult;
                     this -> shortestPath[recLevel] = i;
@@ -132,6 +133,102 @@ int TSP::heldKarp(int start, int actualVertex, std::vector<bool> remainingVertex
     }
 }
 
+PEA::Path* TSP::SimulatedAnnealing(int startingTemperature, double coolingRatio, int epochLength)
+{
+    int verticesNumber = * this -> vertexNumber;
+
+    SDIZO::Array<int> vertices = this->getInitialSolution(verticesNumber);
+
+    int cost = this->calculateCost(vertices);
+    double temperature = startingTemperature;
+
+    SDIZO::Array<int> bestSolution = vertices;
+    int bestCost = cost;
+    int epochCount = 0 ;
+
+    while (temperature > 1)
+    {
+        for(int i = 0 ; i < epochLength ; i++ ) {
+            SDIZO::Array<int> newVertices(vertices);
+            this->switchVertex(newVertices);
+            int newCost = this->calculateCost(newVertices);
+            int delta = cost - newCost;
+
+            if (delta < 0 && !this->makeDecision(delta, temperature))
+                continue;
+
+            cost = newCost;
+            vertices = newVertices;;
+
+            if (cost < bestCost) {
+                bestSolution = vertices;
+                bestCost = cost;
+            }
+        }
+
+        temperature *= pow(coolingRatio,epochCount);
+        epochCount++ ;
+
+    }
+
+    return new PEA::Path(bestSolution, bestCost);
+}
+
+int TSP::calculateCost( SDIZO::Array<int>& vertices)
+{
+    int result = 0;
+    int iterationNumber = *this -> vertexNumber - 1;
+
+    for (size_t i = 0; i < iterationNumber; i++)
+    {
+        result += this -> neighborhoodMatrix [vertices.get(i)] [vertices.get(i + 1)];
+    }
+    result += this -> neighborhoodMatrix [vertices.get(iterationNumber)] [vertices.get(0)];
+
+    return result;
+}
+
+double TSP::getRandom()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0, 1);
+
+    return dis(gen);
+}
+
+double TSP::calculateProbability(const int delta, const double temperature)
+{
+    return exp(delta / temperature);
+}
+
+bool TSP::makeDecision(const int delta, const double temperature)
+{
+    return this->getRandom() < this->calculateProbability(delta, temperature);
+}
+
+
+void TSP::switchVertex(SDIZO::Array<int>& vertices){
+    int verticesNumber = vertices.getSize();
+    std::random_device seed;
+    std::mt19937 gen(seed());
+    std::uniform_int_distribution<int> values(0, verticesNumber - 1);
+    int firstIndex = values(gen);
+    int secondIndex = values(gen);
+    vertices.swap(firstIndex, secondIndex);
+}
+
+SDIZO::Array<int> TSP::getInitialSolution(int verticesNumber)
+{
+    SDIZO::Array<int> vertices;
+    for (int i = 0; i < verticesNumber; i++)
+        vertices.addBack(i);
+    for (int i = 0; i < verticesNumber; i++)
+        this->switchVertex(vertices);
+
+    return vertices;
+}
+
 void TSP::LoadFileTXT(std::string & filename)
 {
     std::fstream File;
@@ -139,6 +236,14 @@ void TSP::LoadFileTXT(std::string & filename)
     if (!File.good()) {
         std::cout << "\nNie mozna wczytac pliku!\n";
     }
+    if (*this->vertexNumber != 0) {
+        for (int i = 0; i < *this->vertexNumber; i++)
+            delete this->neighborhoodMatrix[i];
+        delete[] this->neighborhoodMatrix;
+        this->neighborhoodMatrix = NULL;
+        this->vertexNumber = 0;
+    }
+
 
 
     int numberOfVertices;
@@ -216,7 +321,7 @@ void TSP::LoadFileTSP(std::string & filename)
             }
             else if (!line.compare(0, 12, "DIMENSION : ")) {
                 std::string number = line.substr(12, 100);
-                *(this->vertexNumber) = stoi(number); //zapisanie ilo�ci wierzcho�k�w
+                this->vertexNumber = new int(stoi(number)); //zapisanie ilo�ci wierzcho�k�w
             }
 
 
@@ -374,14 +479,6 @@ void TSP::LoadFileTSP(std::string & filename)
     }
     File.close();
     std::cout << "\nWczytano plik!\n";
-
-
-    for(int i = 0 ; i < *this -> vertexNumber ; i++){
-        for(int j = 0 ; j < *this -> vertexNumber ; j++){
-            std::cout<<" "<<this->neighborhoodMatrix[i][j]<<" ";
-        }
-        std::cout<<std::endl;
-    }
 }
 //
 //void TSP::LoadFileATSP(std::string & filename)
