@@ -11,7 +11,7 @@ PEA::Path::Path(const Path& origin)
 {
 }
 
-PEA::Path::Path(SDIZO::Array<int> vertices, int totalCost)
+PEA::Path::Path(std::vector<int> vertices, int totalCost)
         : _vertices(vertices), _totalCost(totalCost)
 {
 }
@@ -19,12 +19,11 @@ PEA::Path::Path(SDIZO::Array<int> vertices, int totalCost)
 void PEA::Path::display()
 {
     std::cout << "Total cost: " << _totalCost << std::endl;
-    _vertices.print();
 }
 
 void PEA::Path::addVertex(int vertex, int cost)
 {
-    _vertices.addFront(vertex);
+    _vertices.push_back(vertex);
     _totalCost += cost;
 }
 
@@ -33,6 +32,6 @@ int PEA::Path::getTotalCost()
     return _totalCost;
 }
 
-SDIZO::Array<int> PEA::Path::getVertices(){
+std::vector<int> PEA::Path::getVertices(){
     return _vertices;
 }

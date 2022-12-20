@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Array.h"
+#include <vector>
 
 namespace PEA
 {
@@ -9,14 +9,14 @@ namespace PEA
     public:
         Path();
         Path(const Path& origin);
-        Path(SDIZO::Array<int> vertices, int totalCost);
+        Path(std::vector<int> vertices, int totalCost);
         void display();
         void addVertex(int vertex, int cost);
         int getTotalCost();
-        SDIZO::Array<int> getVertices();
+        std::vector<int> getVertices();
 
     private:
         int _totalCost{ 0 };
-        SDIZO::Array<int> _vertices;
+        std::vector<int> _vertices;
     };
 }

@@ -6,8 +6,6 @@
 #define BRUTEFORCE_TRAVELINGSALESMAN_H
 #include <iostream>
 #include <vector>
-#include "./Structures/Array.h"
-#include "./Structures/Path.h"
 
 class TSP {
 
@@ -17,18 +15,18 @@ public:
     void LoadFileTXT(std::string &filename);
     void LoadFileTSP(std::string &filename);
 //    void LoadFileATSP(std::string &filename);
-    std::string bruteForceAlgorithm(int start);
-    int branchAndBound(int start, int actualVertex, std::vector<bool> remainingVertexes, int actualShortestPath = INT32_MAX, int actualPath = 0, int recLevel =0  );
+//    std::string bruteForceAlgorithm(int start);
+//    int branchAndBound(int start, int actualVertex, std::vector<bool> remainingVertexes, int actualShortestPath = INT32_MAX, int actualPath = 0, int recLevel =0  );
     std::vector<int> shortestPath;
-    void GenerateRandomInstance(int VertexNumber);
-    std::string PrintInstance();
-    PEA::Path* SimulatedAnnealing(int startingTemperature, double coolingRatio, int epochLength);
-    int calculateCost( SDIZO::Array<int>& vertices);
+//    void GenerateRandomInstance(int VertexNumber);
+//    std::string PrintInstance();
+    std::vector<int> SimulatedAnnealing(int startingTemperature, double coolingRatio, int epochLength,bool isGeoCoolingType);
+    int calculateCost( std::vector<int>& vertices);
     double getRandom();
     double calculateProbability(const int delta, const double temperature);
     bool makeDecision(const int delta, const double temperature);
-    void switchVertex(SDIZO::Array<int>& vertices);
-    SDIZO::Array<int> getInitialSolution(int verticesNumber);
+    void switchVertex(std::vector<int>& vertices);
+    std::vector<int> generateInitialSolution(int verticesNumber);
 
 private:
     double _coolingRatio = 0.999;

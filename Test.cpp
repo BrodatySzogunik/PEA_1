@@ -8,6 +8,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <algorithm>
+
 
 
 void Test::runTest() {
@@ -15,7 +17,7 @@ void Test::runTest() {
     TSP TravelingSalesman;
     Timer timer;
 
-    PEA::Path *result;
+    std::vector<int> result;
 
     std::fstream configfile;
     std::fstream outputFile;
@@ -41,6 +43,9 @@ void Test::runTest() {
     int timeSum = 0;
     double errorRatioSum = 0;
     int shortestPathSum = 0;
+
+    int coolingType = 0;
+    bool isGeoCoolingType;
 
     double coolingRatioValues[] = {0.9,0.99,0.999,0.9999};
 
@@ -82,8 +87,6 @@ void Test::runTest() {
             TravelingSalesman.shortestPath.push_back(i);
         }
 
-
-
         outputFile << fileName<<" ";
         outputFile << testCount<<" ";
         outputFile << instanceSize<<" ";
@@ -101,7 +104,7 @@ void Test::runTest() {
 
         outputFile << "\n";
 
-        outputFile <<"totalCost;error;time;InitialTemperature;coolingRatio;epochSize\n";
+        outputFile <<"totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical\n";
 
         averageOutputFile << fileName<<" ";
         averageOutputFile << testCount<<" ";
@@ -120,26 +123,27 @@ void Test::runTest() {
 
         averageOutputFile << "\n";
 
-        averageOutputFile <<"totalCost;error;time;InitialTemperature;coolingRatio;epochSize\n";
+        averageOutputFile <<"totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical\n";
 
 
         TravelingSalesman.ReadFromFile(fileName);
 
 
-        for(int inTemp = 10; inTemp <= 100000; inTemp *= 10){
+        for(int inTemp = 10; inTemp <= 10000; inTemp *= 10){
             for(double coolingRatio: coolingRatioValues){
-                for(int epochSize = 10; epochSize <= 100000; epochSize *=10 ){
+                for(int epochSize = 10; epochSize <= 10000; epochSize *=10 ){
                     for(int i = 0 ; i < testCount ; i++)
                     {
                         timer.start();
-                        result = TravelingSalesman.SimulatedAnnealing(inTemp,coolingRatio,epochSize) ;
+                        result = TravelingSalesman.SimulatedAnnealing(inTemp,coolingRatio,epochSize, true) ;
                         timer.stop();
 
-                        errorRatio = (result->getTotalCost()/optimalPathSize -1) * 100;
-                        shortestPathSum +=result ->getTotalCost();
+                        errorRatio = (result[result.size()-1] / optimalPathSize -1) * 100;
+
+                        shortestPathSum +=result[result.size()-1];
                         errorRatioSum += errorRatio;
                         timeSum += timer.getTime(Microseconds);
-                        outputFile << result ->getTotalCost() << ";\t" << errorRatio << ";\t" << timer.getTime(Microseconds)<< ";" << inTemp<<";" << coolingRatio << ";"<<epochSize << "\n";
+                        outputFile << result[result.size()-1] << ";\t" << errorRatio << ";\t" << timer.getTime(Microseconds)<< ";" << inTemp<<";" << coolingRatio << ";"<<epochSize << "\n";
                     }
                     averageOutputFile << shortestPathSum/testCount <<";"<< errorRatioSum/testCount <<";"<< timeSum/testCount<< ";" << inTemp<<";" << coolingRatio << ";"<<epochSize << "\n";
                     shortestPathSum = 0;
@@ -148,12 +152,38 @@ void Test::runTest() {
                 }
             }
         }
+        outputFile <<"totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman\n";
+        averageOutputFile <<"totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman\n";
+
+        for(int inTemp = 10; inTemp <= 10000; inTemp *= 10){
+                for(int epochSize = 10; epochSize <= 10000; epochSize *=10 ){
+                    for(int i = 0 ; i < testCount ; i++)
+                    {
+                        timer.start();
+                        result = TravelingSalesman.SimulatedAnnealing(inTemp,0,epochSize, false) ;
+                        timer.stop();
+
+                        errorRatio = (result[result.size()-1] / optimalPathSize -1) * 100;
+
+                        shortestPathSum +=result[result.size()-1];
+                        errorRatioSum += errorRatio;
+                        timeSum += timer.getTime(Microseconds);
+                        outputFile << result[result.size()-1] << ";\t" << errorRatio << ";\t" << timer.getTime(Microseconds)<< ";" << inTemp<<";" << 0 << ";"<<epochSize << "\n";
+                    }
+                    averageOutputFile << shortestPathSum/testCount <<";"<< errorRatioSum/testCount <<";"<< timeSum/testCount<< ";" << inTemp<<";" << 0 << ";"<<epochSize << "\n";
+                    shortestPathSum = 0;
+                    errorRatioSum = 0;
+                    timeSum = 0;
+                }
+
+        }
 
     };
 
 
     configfile.close();
     outputFile.close();
+    averageOutputFile.close();
 
 
 

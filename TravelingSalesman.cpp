@@ -23,133 +23,133 @@ void TSP::ReadFromFile(std::string filename) {
         return TSP::LoadFileTSP(filename);
     }
 }
-std::string TSP::PrintInstance(){
-    std::string result = "";
-    for(int i = 0 ; i < *this->vertexNumber; i++){
-        for(int j = 0 ; j < *this->vertexNumber ; j++){
-            std::cout << this -> neighborhoodMatrix[i][j] <<"\t";
-        }
-        std::cout << std::endl;
-    }
-    return result;
-}
-void TSP::GenerateRandomInstance(int vertexNumber){
-    if (*this->vertexNumber != 0) {
-        for (int i = 0; i < *this->vertexNumber; i++)
-            delete this->neighborhoodMatrix[i];
-        delete[] this->neighborhoodMatrix;
-        this->neighborhoodMatrix = NULL;
-        this->vertexNumber = 0;
-    }
+//std::string TSP::PrintInstance(){
+//    std::string result = "";
+//    for(int i = 0 ; i < *this->vertexNumber; i++){
+//        for(int j = 0 ; j < *this->vertexNumber ; j++){
+//            std::cout << this -> neighborhoodMatrix[i][j] <<"\t";
+//        }
+//        std::cout << std::endl;
+//    }
+//    return result;
+//}
+//void TSP::GenerateRandomInstance(int vertexNumber){
+//    if (*this->vertexNumber != 0) {
+//        for (int i = 0; i < *this->vertexNumber; i++)
+//            delete this->neighborhoodMatrix[i];
+//        delete[] this->neighborhoodMatrix;
+//        this->neighborhoodMatrix = NULL;
+//        this->vertexNumber = 0;
+//    }
+//
+//
+//    this -> vertexNumber = new int(vertexNumber);
+//
+//    this->neighborhoodMatrix = new int*[vertexNumber];
+//
+//    for (int i = 0; i < vertexNumber; i++)
+//        this -> neighborhoodMatrix[i] = new int[vertexNumber];
+//
+//    for(int i = 0 ; i < vertexNumber; i++){
+//        for(int j = 0 ; j < vertexNumber ; j++){
+//            this -> neighborhoodMatrix[i][j] = rand() % 100 + 1;
+//        }
+//    }
+//
+//}
+
+//std::string TSP::bruteForceAlgorithm(int start){
+//    std::vector<int> vertex;
+//    std::vector<int> shortestPathVertex;
+//    Timer timer;
+//
+//
+//    for(int i = 0 ; i < *this->vertexNumber ; i++) {    //generowanie wektora zawierającego wszystkie dostępne wierzchołki
+//        if (i != start)
+//            vertex.push_back(i);
+//    }
+//
+//    int shortestPath = INT_MAX;
+//    shortestPathVertex = vertex;
+//
+//    do{
+//        int currentPath = 0;
+//
+//        int previousVertex = start;
+//
+//        for(int i = 0 ; i< vertex.size() ; i++){        //obliczenie wartości obecnie testowanej ścieżki
+//            currentPath += this->neighborhoodMatrix[previousVertex][vertex[i]];
+//            previousVertex = vertex [i];
+//            if(currentPath+this->neighborhoodMatrix[previousVertex][start] >= shortestPath){
+//                break;
+//            }
+//        }
+//        currentPath += this->neighborhoodMatrix[previousVertex][start];
+//
+//        if(currentPath < shortestPath){                 //Podmiana wartości shortestPath i shortestPathVerticles jeżeli znaleziono krótszą ścieżkę
+//            shortestPath = currentPath;
+//            shortestPathVertex = vertex;
+//        }
+//
+//    }while(std::next_permutation(vertex.begin(),vertex.end()));     //Tworzenie kolejnej permutacji do momentu wyczerpania wszystkich możliwości
+//
+//    std::string result ="";
+//    result += std::to_string(shortestPath)+";";
+//    result+=std::to_string( 0)+" , ";
+//    for(int i  = 0 ; i < *this->vertexNumber-1; i++)
+//        result+=std::to_string(shortestPathVertex[i])+" , ";
+//    result+=std::to_string( 0);
+//    return result;
+//}
+//
 
 
-    this -> vertexNumber = new int(vertexNumber);
+//int TSP::branchAndBound(int start, int actualVertex, std::vector<bool> remainingVertexes, int actualShortestPath , int actualPath , int recLevel) {
+//    int cost;
+//
+//    if(std::find(remainingVertexes.begin(),remainingVertexes.end(),false) == remainingVertexes.end()){
+//        this -> shortestPath[recLevel] = start;
+//        return actualPath + this -> neighborhoodMatrix[actualVertex][start];
+//
+//    }else{
+//        for(int i = 0 ; i < remainingVertexes.size(); i++){
+//            if(remainingVertexes[i])
+//               continue;
+//
+//            cost = this->neighborhoodMatrix[actualVertex][i];
+//
+//            if(actualPath + cost < actualShortestPath){
+//                remainingVertexes[i] = true;
+//                int heldKarpResult = branchAndBound(start, i, remainingVertexes, actualShortestPath, actualPath + cost,
+//                                                    recLevel + 1);
+//                if(heldKarpResult < actualShortestPath){
+//                    actualShortestPath = heldKarpResult;
+//                    this -> shortestPath[recLevel] = i;
+//                }
+//                remainingVertexes[i] = false;
+//            }
+//        }
+//        return actualShortestPath;
+//    }
+//}
 
-    this->neighborhoodMatrix = new int*[vertexNumber];
-
-    for (int i = 0; i < vertexNumber; i++)
-        this -> neighborhoodMatrix[i] = new int[vertexNumber];
-
-    for(int i = 0 ; i < vertexNumber; i++){
-        for(int j = 0 ; j < vertexNumber ; j++){
-            this -> neighborhoodMatrix[i][j] = rand() % 100 + 1;
-        }
-    }
-
-}
-
-std::string TSP::bruteForceAlgorithm(int start){
-    std::vector<int> vertex;
-    std::vector<int> shortestPathVertex;
-    Timer timer;
-
-
-    for(int i = 0 ; i < *this->vertexNumber ; i++) {    //generowanie wektora zawierającego wszystkie dostępne wierzchołki
-        if (i != start)
-            vertex.push_back(i);
-    }
-
-    int shortestPath = INT_MAX;
-    shortestPathVertex = vertex;
-
-    do{
-        int currentPath = 0;
-
-        int previousVertex = start;
-
-        for(int i = 0 ; i< vertex.size() ; i++){        //obliczenie wartości obecnie testowanej ścieżki
-            currentPath += this->neighborhoodMatrix[previousVertex][vertex[i]];
-            previousVertex = vertex [i];
-            if(currentPath+this->neighborhoodMatrix[previousVertex][start] >= shortestPath){
-                break;
-            }
-        }
-        currentPath += this->neighborhoodMatrix[previousVertex][start];
-
-        if(currentPath < shortestPath){                 //Podmiana wartości shortestPath i shortestPathVerticles jeżeli znaleziono krótszą ścieżkę
-            shortestPath = currentPath;
-            shortestPathVertex = vertex;
-        }
-
-    }while(std::next_permutation(vertex.begin(),vertex.end()));     //Tworzenie kolejnej permutacji do momentu wyczerpania wszystkich możliwości
-
-    std::string result ="";
-    result += std::to_string(shortestPath)+";";
-    result+=std::to_string( 0)+" , ";
-    for(int i  = 0 ; i < *this->vertexNumber-1; i++)
-        result+=std::to_string(shortestPathVertex[i])+" , ";
-    result+=std::to_string( 0);
-    return result;
-}
-
-
-
-int TSP::branchAndBound(int start, int actualVertex, std::vector<bool> remainingVertexes, int actualShortestPath , int actualPath , int recLevel) {
-    int cost;
-
-    if(std::find(remainingVertexes.begin(),remainingVertexes.end(),false) == remainingVertexes.end()){
-        this -> shortestPath[recLevel] = start;
-        return actualPath + this -> neighborhoodMatrix[actualVertex][start];
-
-    }else{
-        for(int i = 0 ; i < remainingVertexes.size(); i++){
-            if(remainingVertexes[i])
-               continue;
-
-            cost = this->neighborhoodMatrix[actualVertex][i];
-
-            if(actualPath + cost < actualShortestPath){
-                remainingVertexes[i] = true;
-                int heldKarpResult = branchAndBound(start, i, remainingVertexes, actualShortestPath, actualPath + cost,
-                                                    recLevel + 1);
-                if(heldKarpResult < actualShortestPath){
-                    actualShortestPath = heldKarpResult;
-                    this -> shortestPath[recLevel] = i;
-                }
-                remainingVertexes[i] = false;
-            }
-        }
-        return actualShortestPath;
-    }
-}
-
-PEA::Path* TSP::SimulatedAnnealing(int startingTemperature, double coolingRatio, int epochLength)
+std::vector<int> TSP::SimulatedAnnealing(int startingTemperature, double coolingRatio, int epochLength, bool isGeoCoolingType)
 {
     int verticesNumber = * this -> vertexNumber;
 
-    SDIZO::Array<int> vertices = this->getInitialSolution(verticesNumber);
+    std::vector<int> vertices = this->generateInitialSolution(verticesNumber);
 
     int cost = this->calculateCost(vertices);
     double temperature = startingTemperature;
 
-    SDIZO::Array<int> bestSolution = vertices;
+    std::vector<int> bestSolution = vertices;
     int bestCost = cost;
     int epochCount = 0 ;
 
     while (temperature > 1)
     {
-        for(int i = 0 ; i < epochLength ; i++ ) {
-            SDIZO::Array<int> newVertices(vertices);
+        for(int i = 0 ; i <= epochLength ; i++ ) {
+            std::vector<int> newVertices(vertices);
             this->switchVertex(newVertices);
             int newCost = this->calculateCost(newVertices);
             int delta = cost - newCost;
@@ -166,35 +166,38 @@ PEA::Path* TSP::SimulatedAnnealing(int startingTemperature, double coolingRatio,
             }
         }
 
-        temperature *= pow(coolingRatio,epochCount);
+
         epochCount++ ;
+        if(isGeoCoolingType)
+            temperature *= pow(coolingRatio,epochCount);
+        else
+            temperature = temperature/(1+log(1+epochCount));
+
 
     }
 
-    return new PEA::Path(bestSolution, bestCost);
+    std::vector<int> solution = bestSolution;
+    solution.push_back(bestCost);
+    return solution;
 }
 
-int TSP::calculateCost( SDIZO::Array<int>& vertices)
+int TSP::calculateCost( std::vector<int>& vertices)
 {
     int result = 0;
     int iterationNumber = *this -> vertexNumber - 1;
 
-    for (size_t i = 0; i < iterationNumber; i++)
+    for (int i = 0; i < iterationNumber; i++)
     {
-        result += this -> neighborhoodMatrix [vertices.get(i)] [vertices.get(i + 1)];
+        result += this -> neighborhoodMatrix [vertices[i]] [vertices[i + 1]];
     }
-    result += this -> neighborhoodMatrix [vertices.get(iterationNumber)] [vertices.get(0)];
+    result += this -> neighborhoodMatrix [vertices[iterationNumber]] [vertices[0]];
 
     return result;
 }
 
 double TSP::getRandom()
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0, 1);
-
-    return dis(gen);
+    return rand() % 101 / 100;
 }
 
 double TSP::calculateProbability(const int delta, const double temperature)
@@ -208,21 +211,21 @@ bool TSP::makeDecision(const int delta, const double temperature)
 }
 
 
-void TSP::switchVertex(SDIZO::Array<int>& vertices){
-    int verticesNumber = vertices.getSize();
-    std::random_device seed;
-    std::mt19937 gen(seed());
-    std::uniform_int_distribution<int> values(0, verticesNumber - 1);
-    int firstIndex = values(gen);
-    int secondIndex = values(gen);
-    vertices.swap(firstIndex, secondIndex);
+void TSP::switchVertex(std::vector<int>& vertices){
+    int verticesNumber = vertices.size();
+    int firstIndex = rand() % verticesNumber;
+    int secondIndex = rand() % verticesNumber;
+    while(firstIndex == secondIndex){
+        secondIndex = rand() % verticesNumber;
+    }
+    std::swap(vertices[firstIndex],vertices[secondIndex]);
 }
 
-SDIZO::Array<int> TSP::getInitialSolution(int verticesNumber)
+std::vector<int> TSP::generateInitialSolution(int verticesNumber)
 {
-    SDIZO::Array<int> vertices;
+    std::vector<int> vertices;
     for (int i = 0; i < verticesNumber; i++)
-        vertices.addBack(i);
+        vertices.push_back(i);
     for (int i = 0; i < verticesNumber; i++)
         this->switchVertex(vertices);
 
