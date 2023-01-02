@@ -38,26 +38,16 @@ void Test::runTest() {
     int testCount  = 0;
     int instanceSize = 0;
     double optimalPathSize = 0;
-    int populationNumber = 0;
-    double pm = 0 ;
-    double pk = 0 ;
-    std::string crossing="";
-    std::string mutation="";
-    std::string selection="";
-    std::string success="";
-    std::string stop="";
-    TSP::CROSS crossingEnum;
-    TSP::MUTATION mutationEnum;
-    TSP::SELECT selectionEnum;
-    TSP::SUCCESS successEnum;
-    TSP::STOP stopEnum;
-    int stopCounter = 0;
-    double maxErrorRatio = 0;
     double errorRatio = 0;
 
     int timeSum = 0;
     double errorRatioSum = 0;
     int shortestPathSum = 0;
+
+    int coolingType = 0;
+    bool isGeoCoolingType;
+
+    double coolingRatioValues[] = {0.9,0.99,0.999,0.9999};
 
     std::vector<bool> vertexes;
     std::vector<int> optimalPath;
@@ -74,23 +64,6 @@ void Test::runTest() {
         configfile >> testCount;
         configfile >> instanceSize;
         configfile >> optimalPathSize;
-        configfile >> populationNumber;
-        configfile >> pm ;
-        configfile >> pk  ;
-        configfile >> crossing;
-        configfile >> mutation;
-        configfile >> selection;
-        configfile >> success;
-        configfile >> stop;
-        configfile >> stopCounter;
-        configfile >> maxErrorRatio;
-
-
-        crossingEnum = TravelingSalesman.crossing.find(crossing)->second;
-        mutationEnum = TravelingSalesman.mutations.find(mutation)->second;;
-        selectionEnum = TravelingSalesman.select.find(selection)->second;;
-        successEnum = TravelingSalesman.success.find(success)->second;;
-        stopEnum = TravelingSalesman.stop.find(stop)->second;;
 
         for (int i = 0; i < instanceSize; i++) {
             configfile >> vertex;
@@ -118,17 +91,6 @@ void Test::runTest() {
         outputFile << testCount<<" ";
         outputFile << instanceSize<<" ";
 
-        outputFile << populationNumber <<" ";
-        outputFile << pm  <<" ";
-        outputFile << pk   <<" ";
-        outputFile << crossing <<" ";
-        outputFile << mutation <<" ";
-        outputFile << selection <<" ";
-        outputFile << success <<" ";
-        outputFile << stop <<" ";
-        outputFile << stopCounter <<" ";
-        outputFile << maxErrorRatio <<" ";
-
         outputFile << optimalPathSize << " ";
         if(isOptimalPath){
             outputFile <<" { ";
@@ -142,26 +104,13 @@ void Test::runTest() {
 
         outputFile << "\n";
 
-        outputFile <<"totalCost;error;time\n";
+        outputFile <<"totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical\n";
 
         averageOutputFile << fileName<<" ";
         averageOutputFile << testCount<<" ";
         averageOutputFile << instanceSize<<" ";
 
-        averageOutputFile << populationNumber <<" ";
-        averageOutputFile << pm  <<" ";
-        averageOutputFile << pk   <<" ";
-        averageOutputFile << crossing <<" ";
-        averageOutputFile << mutation <<" ";
-        averageOutputFile << selection <<" ";
-        averageOutputFile << success <<" ";
-        averageOutputFile << stop <<" ";
-        averageOutputFile << stopCounter <<" ";
-        averageOutputFile << maxErrorRatio <<" ";
-
         averageOutputFile << optimalPathSize << " ";
-
-
         if(isOptimalPath){
             averageOutputFile <<" { ";
             for (int i = 0; i < instanceSize; i++) {
@@ -174,32 +123,61 @@ void Test::runTest() {
 
         averageOutputFile << "\n";
 
-        averageOutputFile <<"totalCost;error;time\n";
+        averageOutputFile <<"totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical\n";
 
 
         TravelingSalesman.ReadFromFile(fileName);
 
 
+        for(int inTemp = 10; inTemp <= 10000; inTemp *= 10){
+            for(double coolingRatio: coolingRatioValues){
+                for(int epochSize = 10; epochSize <= 10000; epochSize *=10 ){
+                    for(int i = 0 ; i < testCount ; i++)
+                    {
+                        timer.start();
+                        result = TravelingSalesman.SimulatedAnnealing(inTemp,coolingRatio,epochSize, true) ;
+                        timer.stop();
 
-        for(int i = 0 ; i < testCount ; i++)
-        {
-            timer.start();
-            result = TravelingSalesman.geneticAlgorithm(populationNumber,pm,pk, crossingEnum,mutationEnum,selectionEnum,successEnum,stopEnum,stopCounter, optimalPathSize, maxErrorRatio) ;
-            timer.stop();
+                        errorRatio = (result[result.size()-1] / optimalPathSize -1) * 100;
 
-            errorRatio = (result[result.size()-1] / optimalPathSize -1) * 100;
-
-            shortestPathSum +=result[result.size()-1];
-            errorRatioSum += errorRatio;
-            timeSum += timer.getTime(Seconds);
-            outputFile << result[result.size()-1] << ";\t" << errorRatio << ";\t" << timer.getTime(Seconds) << ";" "\n";
-            outputFile.flush();
+                        shortestPathSum +=result[result.size()-1];
+                        errorRatioSum += errorRatio;
+                        timeSum += timer.getTime(Microseconds);
+                        outputFile << result[result.size()-1] << ";\t" << errorRatio << ";\t" << timer.getTime(Microseconds)<< ";" << inTemp<<";" << coolingRatio << ";"<<epochSize << "\n";
+                    }
+                    averageOutputFile << shortestPathSum/testCount <<";"<< errorRatioSum/testCount <<";"<< timeSum/testCount<< ";" << inTemp<<";" << coolingRatio << ";"<<epochSize << "\n";
+                    shortestPathSum = 0;
+                    errorRatioSum = 0;
+                    timeSum = 0;
+                }
+            }
         }
-        averageOutputFile << shortestPathSum/testCount <<";"<< errorRatioSum/testCount <<";"<< timeSum/testCount << "\n";
-        shortestPathSum = 0;
-        errorRatioSum = 0 ;
-        timeSum = 0;
-        averageOutputFile.flush();
+        outputFile <<"totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman\n";
+        averageOutputFile <<"totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman\n";
+
+        for(int inTemp = 10; inTemp <= 10000; inTemp *= 10){
+                for(int epochSize = 10; epochSize <= 10000; epochSize *=10 ){
+                    for(int i = 0 ; i < testCount ; i++)
+                    {
+                        timer.start();
+                        result = TravelingSalesman.SimulatedAnnealing(inTemp,0,epochSize, false) ;
+                        timer.stop();
+
+                        errorRatio = (result[result.size()-1] / optimalPathSize -1) * 100;
+
+                        shortestPathSum +=result[result.size()-1];
+                        errorRatioSum += errorRatio;
+                        timeSum += timer.getTime(Microseconds);
+                        outputFile << result[result.size()-1] << ";\t" << errorRatio << ";\t" << timer.getTime(Microseconds)<< ";" << inTemp<<";" << 0 << ";"<<epochSize << "\n";
+                    }
+                    averageOutputFile << shortestPathSum/testCount <<";"<< errorRatioSum/testCount <<";"<< timeSum/testCount<< ";" << inTemp<<";" << 0 << ";"<<epochSize << "\n";
+                    shortestPathSum = 0;
+                    errorRatioSum = 0;
+                    timeSum = 0;
+                }
+
+        }
+
     };
 
 

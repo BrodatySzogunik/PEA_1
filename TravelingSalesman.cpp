@@ -23,163 +23,6 @@ void TSP::ReadFromFile(std::string filename) {
         return TSP::LoadFileTSP(filename);
     }
 }
-//std::string TSP::PrintInstance(){
-//    std::string result = "";
-//    for(int i = 0 ; i < *this->vertexNumber; i++){
-//        for(int j = 0 ; j < *this->vertexNumber ; j++){
-//            std::cout << this -> neighborhoodMatrix[i][j] <<"\t";
-//        }
-//        std::cout << std::endl;
-//    }
-//    return result;
-//}
-//void TSP::GenerateRandomInstance(int vertexNumber){
-//    if (*this->vertexNumber != 0) {
-//        for (int i = 0; i < *this->vertexNumber; i++)
-//            delete this->neighborhoodMatrix[i];
-//        delete[] this->neighborhoodMatrix;
-//        this->neighborhoodMatrix = NULL;
-//        this->vertexNumber = 0;
-//    }
-//
-//
-//    this -> vertexNumber = new int(vertexNumber);
-//
-//    this->neighborhoodMatrix = new int*[vertexNumber];
-//
-//    for (int i = 0; i < vertexNumber; i++)
-//        this -> neighborhoodMatrix[i] = new int[vertexNumber];
-//
-//    for(int i = 0 ; i < vertexNumber; i++){
-//        for(int j = 0 ; j < vertexNumber ; j++){
-//            this -> neighborhoodMatrix[i][j] = rand() % 100 + 1;
-//        }
-//    }
-//
-//}
-
-//std::string TSP::bruteForceAlgorithm(int start){
-//    std::vector<int> vertex;
-//    std::vector<int> shortestPathVertex;
-//    Timer timer;
-//
-//
-//    for(int i = 0 ; i < *this->vertexNumber ; i++) {    //generowanie wektora zawierającego wszystkie dostępne wierzchołki
-//        if (i != start)
-//            vertex.push_back(i);
-//    }
-//
-//    int shortestPath = INT_MAX;
-//    shortestPathVertex = vertex;
-//
-//    do{
-//        int currentPath = 0;
-//
-//        int previousVertex = start;
-//
-//        for(int i = 0 ; i< vertex.size() ; i++){        //obliczenie wartości obecnie testowanej ścieżki
-//            currentPath += this->neighborhoodMatrix[previousVertex][vertex[i]];
-//            previousVertex = vertex [i];
-//            if(currentPath+this->neighborhoodMatrix[previousVertex][start] >= shortestPath){
-//                break;
-//            }
-//        }
-//        currentPath += this->neighborhoodMatrix[previousVertex][start];
-//
-//        if(currentPath < shortestPath){                 //Podmiana wartości shortestPath i shortestPathVerticles jeżeli znaleziono krótszą ścieżkę
-//            shortestPath = currentPath;
-//            shortestPathVertex = vertex;
-//        }
-//
-//    }while(std::next_permutation(vertex.begin(),vertex.end()));     //Tworzenie kolejnej permutacji do momentu wyczerpania wszystkich możliwości
-//
-//    std::string result ="";
-//    result += std::to_string(shortestPath)+";";
-//    result+=std::to_string( 0)+" , ";
-//    for(int i  = 0 ; i < *this->vertexNumber-1; i++)
-//        result+=std::to_string(shortestPathVertex[i])+" , ";
-//    result+=std::to_string( 0);
-//    return result;
-//}
-//
-
-
-//int TSP::branchAndBound(int start, int actualVertex, std::vector<bool> remainingVertexes, int actualShortestPath , int actualPath , int recLevel) {
-//    int cost;
-//
-//    if(std::find(remainingVertexes.begin(),remainingVertexes.end(),false) == remainingVertexes.end()){
-//        this -> shortestPath[recLevel] = start;
-//        return actualPath + this -> neighborhoodMatrix[actualVertex][start];
-//
-//    }else{
-//        for(int i = 0 ; i < remainingVertexes.size(); i++){
-//            if(remainingVertexes[i])
-//               continue;
-//
-//            cost = this->neighborhoodMatrix[actualVertex][i];
-//
-//            if(actualPath + cost < actualShortestPath){
-//                remainingVertexes[i] = true;
-//                int heldKarpResult = branchAndBound(start, i, remainingVertexes, actualShortestPath, actualPath + cost,
-//                                                    recLevel + 1);
-//                if(heldKarpResult < actualShortestPath){
-//                    actualShortestPath = heldKarpResult;
-//                    this -> shortestPath[recLevel] = i;
-//                }
-//                remainingVertexes[i] = false;
-//            }
-//        }
-//        return actualShortestPath;
-//    }
-//}
-
-std::vector<int> TSP::SimulatedAnnealing(int startingTemperature, double coolingRatio, int epochLength, bool isGeoCoolingType)
-{
-    int verticesNumber = * this -> vertexNumber;
-
-    std::vector<int> vertices = this->generateInitialSolution(verticesNumber);
-
-    int cost = this->calculateCost(vertices);
-    double temperature = startingTemperature;
-
-    std::vector<int> bestSolution = vertices;
-    int bestCost = cost;
-    int epochCount = 0 ;
-
-    while (temperature > 1)
-    {
-        for(int i = 0 ; i <= epochLength ; i++ ) {
-            std::vector<int> newVertices(vertices);
-            this->switchVertex(newVertices);
-            int newCost = this->calculateCost(newVertices);
-            int delta = cost - newCost;
-
-            if (delta < 0 && !this->makeDecision(delta, temperature))
-                continue;
-
-            cost = newCost;
-            vertices = newVertices;;
-
-            if (cost < bestCost) {
-                bestSolution = vertices;
-                bestCost = cost;
-            }
-        }
-
-
-        epochCount++ ;
-        if(isGeoCoolingType)
-            temperature *= pow(coolingRatio,epochCount);
-        else
-            temperature = temperature/(1+log(1+epochCount));
-
-
-    }
-
-    std::vector<int> solution = bestSolution;
-    solution.push_back(bestCost);
-    return solution;
-}
 
 int TSP::calculateCost( std::vector<int>& vertices)
 {
@@ -197,21 +40,195 @@ int TSP::calculateCost( std::vector<int>& vertices)
 
 double TSP::getRandom()
 {
-    return rand() % 101 / 100;
+    return (float)rand() / (float)RAND_MAX;
 }
 
-double TSP::calculateProbability(const int delta, const double temperature)
+std::vector<int> TSP::geneticAlgorithm(int populationSize,double pm, double pk, CROSS crossing, MUTATION mutation, SELECT selection, SUCCESS success ,STOP stop, int stopCounter ,double optimalPath, double maxErrorRatio){
+
+    int selectedPopulationSize = ((populationSize / 2) - 1);
+    int k = selectedPopulationSize / 3;
+    if(k == 0 || k == 1 ) k=2;
+
+    std::vector<std::vector<int>> population = TSP::generateInitialSolution(populationSize,*this->vertexNumber) ;
+    std::vector<std::vector<int>> newPopulation ;
+    std::vector<std::vector<int>> selectedPopulation ;
+
+    std::vector<int> alphaMale = population[0];
+    int i = 0 ; //generation counter
+    int noChangeCounter = 0;
+    Timer timer ;
+
+    timer.start();
+
+
+    do{
+        int min= calculateCost(alphaMale);
+        for(auto & solution: population){
+            int cost = calculateCost(solution);
+            if(cost < min){
+                min = cost;
+                alphaMale = solution;
+                std::cout<<"generation: "<< i<<"\n";
+                std::cout<<"best solution: "<< min<<"\n";
+                noChangeCounter = 0;
+            }
+        }
+
+        if(selection == SELECT::TUR){
+            selectedPopulation = tournamentSelection(population, selectedPopulationSize, k);
+        }else if(selection == SELECT::DUE){
+            selectedPopulation = duelSelection(population, selectedPopulationSize);
+        }
+
+
+        while(newPopulation.size() < populationSize){
+            int parent2;
+            parent2 = rand() % selectedPopulationSize;
+
+            if(makeDecision(pk)){
+                std::vector<int> child1(*this->vertexNumber,-1),child2(*this->vertexNumber,-1);
+                if(crossing == CROSS::OX){
+                    this->OXCrossing(alphaMale,selectedPopulation[parent2],child1,child2);
+                }else if(crossing == CROSS::PMX){
+                    this->PMXCrossing(alphaMale,selectedPopulation[parent2],child1,child2);
+                }
+                newPopulation.push_back(child1);
+                newPopulation.push_back(child2);
+            }
+        }
+
+        for(int j = 0 ; j < newPopulation.size(); j++){
+            if(makeDecision(pm)){
+                if(mutation == MUTATION::SWP){
+                    this->mutateBySwap(newPopulation[j]);
+                }else if(mutation == MUTATION::INV){
+                    this->mutateByInversion(newPopulation[j]);
+                }
+            }
+        }
+
+        if(success == SUCCESS::ECH){
+            int min1=INT32_MAX;
+            int min2=INT32_MAX;
+            std::vector<int>NewBestOne;
+            for(auto & solution: newPopulation){
+                int cost = calculateCost(solution);
+                if(cost < min1){
+                    min1 = cost;
+                    NewBestOne = solution;
+                }
+            }
+
+            population.clear();
+            if(min2 < min1){
+                population.push_back(alphaMale);
+
+            }else{
+                population.push_back(NewBestOne);
+            }
+            for(int i = 0 ; i < populationSize-1 ; i++){
+                population.push_back(newPopulation[i]);
+            }
+
+        }else if(success == SUCCESS::FCH){
+            population.clear();
+            for(int i = 0 ; i < populationSize ; i++){
+                population.push_back(newPopulation[i]);
+            }
+        }
+//        std::cout<<(((calculateCost(alphaMale) / optimalPath -1)*100) ) <<" "<< maxErrorRatio<< std::endl;
+
+        newPopulation.clear();
+        selectedPopulation.clear();
+        i++;
+        noChangeCounter++;
+
+        timer.stop();
+        if(timer.getTime(Seconds) > 600){
+            break;
+        }
+    }while((stop == STOP::GEN && i < stopCounter)||
+    (stop == STOP::NCH && noChangeCounter < stopCounter ));
+
+
+    alphaMale.push_back(calculateCost(alphaMale));
+    return  alphaMale;
+}
+
+std::vector<std::vector<int>> TSP::generateInitialSolution(int populationNumber,int verticesNumber)
 {
-    return exp(delta / temperature);
+    std::vector<std::vector<int>> population(populationNumber,std::vector<int>(verticesNumber,1));
+    for(int x = 0 ; x < populationNumber ; x++){
+        for (int j = 0; j < verticesNumber; j++)
+            population[x][j]=j;
+        for (int i = 0; i < verticesNumber; i++)
+            this->mutateBySwap(population[x]);
+    }
+    return population;
 }
 
-bool TSP::makeDecision(const int delta, const double temperature)
-{
-    return this->getRandom() < this->calculateProbability(delta, temperature);
+
+
+std::vector<std::vector<int>> TSP::tournamentSelection(std::vector<std::vector<int>> & population,int populationSize,int k){
+        std::vector<std::vector<int>> newPopulation;
+        for(int counter =0 ; counter < populationSize ; counter ++){
+
+            std::vector<int> chosenOnesIndex;
+            for(int i = 0 ; i < k; i++){
+                int random;
+                do{
+                    random = rand() % population.size();
+                }
+                while(std::find(chosenOnesIndex.begin(),chosenOnesIndex.end(),random) != chosenOnesIndex.end());
+
+                chosenOnesIndex.push_back(random);
+            }
+
+            std::vector<std::vector<int>> chosenOnes;
+            for(auto & index: chosenOnesIndex){
+                chosenOnes.push_back(population[index]);
+            }
+
+            int min=INT32_MAX;
+            std::vector<int>bestOne;
+            for(auto & solution: chosenOnes){
+                int cost = calculateCost(solution);
+                if(cost < min){
+                    min = cost;
+                    bestOne = solution;
+                }
+            }
+            newPopulation.push_back(bestOne);
+            chosenOnesIndex.clear();
+            chosenOnes.clear();
+            bestOne.clear();
+        }
+        return newPopulation;
 }
 
+std::vector<std::vector<int>> TSP::duelSelection(std::vector<std::vector<int>> & population,int populationSize){
+    std::vector<std::vector<int>> newPopulation;
+    int random1, random2;
+    for(int counter =0 ; counter < populationSize ; counter ++){
 
-void TSP::switchVertex(std::vector<int>& vertices){
+        random1 = rand() % population.size();
+        random2 = rand() % population.size();
+        if(random1 == random2){
+            random2++;
+            random2 = random2 % population.size();
+        }
+
+        if(calculateCost(population[random1]) > calculateCost(population[random2])){
+            newPopulation.push_back(population[random2]);
+        }else{
+            newPopulation.push_back(population[random2]);
+        }
+
+    }
+    return newPopulation;
+}
+
+void TSP::mutateBySwap(std::vector<int>& vertices){
     int verticesNumber = vertices.size();
     int firstIndex = rand() % verticesNumber;
     int secondIndex = rand() % verticesNumber;
@@ -221,15 +238,249 @@ void TSP::switchVertex(std::vector<int>& vertices){
     std::swap(vertices[firstIndex],vertices[secondIndex]);
 }
 
-std::vector<int> TSP::generateInitialSolution(int verticesNumber)
-{
-    std::vector<int> vertices;
-    for (int i = 0; i < verticesNumber; i++)
-        vertices.push_back(i);
-    for (int i = 0; i < verticesNumber; i++)
-        this->switchVertex(vertices);
+void TSP::mutateByInversion(std::vector<int>& vertices){
+    int verticesNumber = vertices.size();
+    int firstIndex ;
+    int secondIndex ;
+    do{
+        firstIndex = rand() % verticesNumber;
+        secondIndex = rand() % verticesNumber;
+    }while(firstIndex == secondIndex);
 
-    return vertices;
+    if(firstIndex>secondIndex) std::swap(firstIndex,secondIndex);
+
+    auto diff = secondIndex - firstIndex;
+
+    if(diff == 1){
+        std::swap(vertices[firstIndex],vertices[secondIndex]);
+        return;
+    }
+
+    for(size_t counter = 1; counter < diff; ++firstIndex, --secondIndex, ++counter)
+    {
+        std::swap(vertices[firstIndex], vertices[secondIndex]);
+
+    }
+}
+
+void TSP::mutateByScramble(std::vector<int>& vertices){
+    int verticesNumber = vertices.size();
+
+    //    radom number of vercices to swap
+    int randomSubsetSize;
+    do{
+        randomSubsetSize = rand() % verticesNumber;
+    }while(randomSubsetSize == 0);
+
+    std::vector<int> *indexesToSwap = new std::vector<int>;
+
+    int temp;
+    bool repeat;
+
+    for(int i = 0 ; i < randomSubsetSize; i++){
+        temp = rand() % verticesNumber;
+        for(auto index: *indexesToSwap){
+            if(temp == index){
+                repeat = true;
+            }
+        }
+        if(!repeat){
+            indexesToSwap->push_back(temp);
+        }
+        repeat = false;
+    }
+
+
+    for(auto index: *indexesToSwap){
+        do{
+            temp = rand() % indexesToSwap->size();
+        }while(temp == index);
+
+        std::swap(vertices[index], vertices[temp]);
+    }
+}
+
+void TSP::PMXCrossing(std::vector<int>  & parent1, std::vector<int>  & parent2,std::vector<int> & child1, std::vector<int> & child2){
+    std::vector<int> child1buff(parent1.size(), -1);
+    std::vector<int> child2buff(parent1.size(), -1);
+
+    int verticesNumber = parent1.size();
+    int firstIndex ,secondIndex ;
+    do{
+        firstIndex = rand() % verticesNumber;
+        secondIndex = rand() % verticesNumber;
+    }while(firstIndex == secondIndex);
+
+    if(firstIndex > secondIndex)
+        std::swap(firstIndex, secondIndex);
+
+    // copy genomes into new chromosomes
+
+    copyGenomes(parent2, child1buff, firstIndex, secondIndex);
+    copyGenomes(parent1, child2buff, firstIndex, secondIndex);
+
+    // inserting matching genomes
+    for(int i = 0; i < child1buff.size(); ++i)
+    {
+        if(i >= firstIndex && i <= secondIndex)
+            continue;
+
+        auto found = std::find(child1buff.begin(), child1buff.end(), parent1[i]);
+        if(found != child1buff.end())
+            continue;
+
+        child1buff[i] = parent1[i];
+    }
+
+    for(int i = 0; i < child2buff.size(); ++i)
+    {
+        if(i >= firstIndex && i <= secondIndex)
+            continue;
+
+        auto found = std::find(child2buff.begin(), child2buff.end(), parent2[i]);
+        if(found != child2buff.end())
+            continue;
+
+        child2buff[i] = parent2[i];
+    }
+
+    // filling chromosomes
+    for(int i = 0, j = 0; i < parent1.size() && j < parent1.size() ; ++i)
+    {
+        if(child1buff[i] != -1)
+            continue;
+
+        while(j < parent1.size())
+        {
+            auto found = std::find(child1buff.begin(), child1buff.end(), j);
+            if(found != child1buff.end())
+            {
+                j++;
+                continue;
+            }
+
+            break;
+        }
+
+        child1buff[i] = j;
+        j++;
+
+    }
+
+    for(int i = 0, j = 0; i < parent2.size() && j < parent2.size() ; ++i)
+    {
+        if(child2buff[i] != -1)
+            continue;
+
+        while(j < parent1.size())
+        {
+            auto found = std::find(child2buff.begin(), child2buff.end(), j);
+            if(found != child2buff.end())
+            {
+                j++;
+                continue;
+            }
+
+            break;
+        }
+
+        child2buff[i] = j;
+        j++;
+    }
+
+    child1 = child1buff;
+    child2 = child2buff;
+
+};
+
+void TSP::OXCrossing(std::vector<int> & parent1, std::vector<int> & parent2,std::vector<int> & child1, std::vector<int> & child2){
+
+
+    int verticesNumber = parent1.size();
+    int firstIndex ,secondIndex ;
+    do{
+        firstIndex = rand() % verticesNumber;
+        secondIndex = rand() %  verticesNumber;
+    }while(firstIndex == secondIndex);
+
+    std::vector<int> child1buff(parent1.size(), -1);
+    std::vector<int> child2buff(parent1.size(), -1);
+
+    if(firstIndex > secondIndex)
+        std::swap(firstIndex, secondIndex);
+
+    std::vector<int> copyBufor1;
+    std::vector<int> copyBufor2;
+
+    for(int i = firstIndex ; i <= secondIndex ; i++ ){
+        copyBufor2.push_back(parent2[i]);
+        copyBufor1.push_back(parent1[i]);
+    }
+
+    copyGenomes(parent2, child1buff, firstIndex, secondIndex);
+    copyGenomes(parent1, child2buff, firstIndex, secondIndex);
+
+    int child2iterator = secondIndex, child1iterator = secondIndex;
+    for(int i = secondIndex+1 ; i < verticesNumber ; i++){
+        if(std::find(copyBufor2.begin(), copyBufor2.end(), parent1[i]) == copyBufor2.end()){
+            child1iterator++;
+            if(child1iterator >= verticesNumber){
+                child1iterator = 0 ;
+            }
+            child1buff[child1iterator] = parent1[i];
+
+        }
+        if(std::find(copyBufor1.begin(), copyBufor1.end(), parent2[i]) == copyBufor1.end()){
+            child2iterator++;
+            if(child2iterator >= verticesNumber){
+                child2iterator = 0 ;
+            }
+            child2buff[child2iterator] = parent2[i];
+
+        }
+    }
+
+
+    for(int i = 0 ; i <= secondIndex ; i++){
+        if(std::find(copyBufor2.begin(), copyBufor2.end(), parent1[i]) == copyBufor2.end()){
+            child1iterator++;
+            if(child1iterator >= verticesNumber){
+                child1iterator = 0 ;
+            }
+            child1buff[child1iterator] = parent1[i];
+
+
+        }
+        if(std::find(copyBufor1.begin(), copyBufor1.end(), parent2[i]) == copyBufor1.end()){
+            child2iterator++;
+            if(child2iterator >= verticesNumber){
+                child2iterator = 0 ;
+            }
+            child2buff[child2iterator] = parent2[i];
+
+        }
+    }
+
+
+    child1 = child1buff;
+    child2 = child2buff;
+
+    child2buff.clear();
+    child1buff.clear();
+    copyBufor1.clear();
+    copyBufor2.clear();
+};
+
+void TSP::copyGenomes(const std::vector<int> & source_, std::vector<int> & destination_, int firstIndex_, int secondIndex_)
+{
+    for(int i = firstIndex_; i <= secondIndex_; ++i)
+    {
+        destination_[i] = source_[i];
+    }
+}
+
+bool TSP::makeDecision(double probability){
+    return this->getRandom() < probability;
 }
 
 void TSP::LoadFileTXT(std::string & filename)
@@ -552,5 +803,104 @@ void TSP::LoadFileTSP(std::string & filename)
 //    return 0;
 //}
 
+
+
+//
+//void TSP::PMXCrossover(std::vector<int> & parent1, std::vector<int> & parent2)
+//{
+//    int verticesNumber = parent1.size();
+//    int firstIndex{0}, secondIndex{0};
+//
+//    while(firstIndex == secondIndex)
+//    {
+//        firstIndex = rand() % verticesNumber;
+//        secondIndex =  rand() % verticesNumber;
+//    }
+//
+//    if(firstIndex > secondIndex)
+//        std::swap(firstIndex, secondIndex);
+//
+//
+//    std::vector<int> buffer1(parent1.size(), -1);
+//    std::vector<int> buffer2(parent2.size(), -1);
+//
+//    // copy genomes into new chromosomes
+//
+//    copyGenomes(parent1, buffer1, firstIndex, secondIndex);
+//    copyGenomes(parent2, buffer2, firstIndex, secondIndex);
+//
+//    // inserting matching genomes
+//    for(int i = 0; i < buffer1.size(); ++i)
+//    {
+//        if(i >= firstIndex && i <= secondIndex)
+//            continue;
+//
+//        auto found = std::find(buffer1.begin(), buffer1.end(), parent1[i]);
+//        if(found != buffer1.end())
+//            continue;
+//
+//        buffer1[i] = parent1[i];
+//    }
+//
+//    for(int i = 0; i < buffer2.size(); ++i)
+//    {
+//        if(i >= firstIndex && i <= secondIndex)
+//            continue;
+//
+//        auto found = std::find(buffer2.begin(), buffer2.end(), parent2[i]);
+//        if(found != buffer2.end())
+//            continue;
+//
+//        buffer2[i] = parent2[i];
+//    }
+//
+//    // filling chromosomes
+//    for(int i = 0, j = 1; i < parent1.size() && j < parent1.size() + 1; ++i)
+//    {
+//        if(buffer1[i] != -1)
+//            continue;
+//
+//        while(j < parent1.size())
+//        {
+//            auto found = std::find(buffer1.begin(), buffer1.end(), j);
+//            if(found != buffer1.end())
+//            {
+//                j++;
+//                continue;
+//            }
+//
+//            break;
+//        }
+//
+//        buffer1[i] = j;
+//        j++;
+//
+//    }
+//
+//    for(int i = 0, j = 1; i < parent2.size() && j < parent2.size() + 1; ++i)
+//    {
+//        if(buffer2[i] != -1)
+//            continue;
+//
+//        while(j < parent1.size())
+//        {
+//            auto found = std::find(buffer2.begin(), buffer2.end(), j);
+//            if(found != buffer2.end())
+//            {
+//                j++;
+//                continue;
+//            }
+//
+//            break;
+//        }
+//
+//        buffer2[i] = j;
+//        j++;
+//    }
+//
+//    parent1 = buffer1;
+//    parent2 = buffer2;
+//}
+//
 
 
