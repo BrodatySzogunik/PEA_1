@@ -109,7 +109,6 @@ std::vector<int> TSP::geneticAlgorithm(int populationSize,double pm, double pk, 
 
         if(success == SUCCESS::ECH){
             int min1=INT32_MAX;
-            int min2=INT32_MAX;
             std::vector<int>NewBestOne;
             for(auto & solution: newPopulation){
                 int cost = calculateCost(solution);
@@ -119,8 +118,22 @@ std::vector<int> TSP::geneticAlgorithm(int populationSize,double pm, double pk, 
                 }
             }
 
+            if(min <= min1){
+                std::sort(population.begin(), population.end(),
+                          [this](std::vector<int>& a, std::vector<int>& b) {
+                              return calculateCost(a) < calculateCost(b);
+                          });
+                std::sort(newPopulation.begin(), newPopulation.end(),
+                          [this](std::vector<int>& a, std::vector<int>& b) {
+                              return calculateCost(a) < calculateCost(b);
+                          });
+                for(int i = 0 ; i <= (population.size() * 0.1) ; i++){
+                    newPopulation[(newPopulation.size()-2)-i] = population[i];
+                }
+            }
+
             population.clear();
-            if(min2 < min1){
+            if(min <= min1){
                 population.push_back(alphaMale);
 
             }else{
@@ -136,7 +149,6 @@ std::vector<int> TSP::geneticAlgorithm(int populationSize,double pm, double pk, 
                 population.push_back(newPopulation[i]);
             }
         }
-//        std::cout<<(((calculateCost(alphaMale) / optimalPath -1)*100) ) <<" "<< maxErrorRatio<< std::endl;
 
         newPopulation.clear();
         selectedPopulation.clear();
@@ -144,11 +156,12 @@ std::vector<int> TSP::geneticAlgorithm(int populationSize,double pm, double pk, 
         noChangeCounter++;
 
         timer.stop();
-        if(timer.getTime(Seconds) > 600){
+        if(timer.getTime(Seconds) > 599){
             break;
         }
-    }while((stop == STOP::GEN && i < stopCounter)||
-    (stop == STOP::NCH && noChangeCounter < stopCounter ));
+    }while((stop == STOP::GEN && i < (*this->vertexNumber * 5))||
+    (stop == STOP::NCH && noChangeCounter < stopCounter )&&
+    (((calculateCost(alphaMale) / optimalPath -1)*100) > maxErrorRatio));
 
 
     alphaMale.push_back(calculateCost(alphaMale));

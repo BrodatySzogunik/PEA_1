@@ -23,8 +23,6 @@ void Test::runTest() {
     std::fstream outputFile;
     std::fstream averageOutputFile;
     configfile.open("config.ini", std::ios::in);
-    outputFile.open("resultAll.csv", std::ios::out);
-    averageOutputFile.open("resultAvg.csv", std::ios::out);
 
 
 
@@ -85,12 +83,17 @@ void Test::runTest() {
         configfile >> stopCounter;
         configfile >> maxErrorRatio;
 
+        outputFile.open(fileName+"resultAll.csv", std::ios::out);
+        averageOutputFile.open(fileName+"resultAvg.csv", std::ios::out);
+
 
         crossingEnum = TravelingSalesman.crossing.find(crossing)->second;
         mutationEnum = TravelingSalesman.mutations.find(mutation)->second;;
         selectionEnum = TravelingSalesman.select.find(selection)->second;;
         successEnum = TravelingSalesman.success.find(success)->second;;
         stopEnum = TravelingSalesman.stop.find(stop)->second;;
+
+
 
         for (int i = 0; i < instanceSize; i++) {
             configfile >> vertex;
@@ -142,7 +145,7 @@ void Test::runTest() {
 
         outputFile << "\n";
 
-        outputFile <<"totalCost;error;time\n";
+        outputFile <<"totalCost;error;time;PopulationNumber;pm;pk;cross;mutate;select;success;stop;stopCounter;optimalPathSize;maxErrorRatio\n";
 
         averageOutputFile << fileName<<" ";
         averageOutputFile << testCount<<" ";
@@ -174,32 +177,95 @@ void Test::runTest() {
 
         averageOutputFile << "\n";
 
-        averageOutputFile <<"totalCost;error;time\n";
+        averageOutputFile <<"totalCost;error;time;PopulationNumber;pm;pk;cross;mutate;select;success;stop;stopCounter;optimalPathSize;maxErrorRatio\n";
 
 
         TravelingSalesman.ReadFromFile(fileName);
+        int populationNumbers[] = { 100,200};
+        double pms [] = {0.1,0.3};
+        double pks [] = { 0.7,0.9};
+        TSP::CROSS crossIt [] = {TSP::CROSS::OX, TSP::CROSS::PMX};
+        TSP::MUTATION mutateIt [] = {TSP::MUTATION::SWP };
+        TSP::SELECT selectIt [] = { TSP::SELECT::DUE, TSP::SELECT::TUR};
+        TSP::SUCCESS successIt [] = { TSP::SUCCESS::FCH, TSP::SUCCESS::ECH};
+        TSP::STOP stopIt [] = { TSP::STOP::NCH, TSP::STOP::GEN};
 
 
 
-        for(int i = 0 ; i < testCount ; i++)
-        {
-            timer.start();
-            result = TravelingSalesman.geneticAlgorithm(populationNumber,pm,pk, crossingEnum,mutationEnum,selectionEnum,successEnum,stopEnum,stopCounter, optimalPathSize, maxErrorRatio) ;
-            timer.stop();
+        for(auto populationNumber1: populationNumbers){
+            for( auto pm1 : pms){
+                for( auto pk1 : pks){
+                    for(auto mutate : mutateIt){
+                        for(auto select : selectIt){
+                            for(auto successs : successIt){
+                                for(auto stopp : stopIt){
+                                    for(auto cross : crossIt){
+                                        crossing=cross ? "OX" : "PMX";
+                                        mutation=mutate ? "INV" : "SWP";
+                                        selection=select ? "DUE" : "TUR";
+                                        success=successs ? "ECH" : "FCH";
+                                        stop=stopp ? "NCH" : "GEN";
+                                        for(int i = 0 ; i < testCount ; i++)
+                                        {
 
-            errorRatio = (result[result.size()-1] / optimalPathSize -1) * 100;
+                                            timer.start();
+                                            result = TravelingSalesman.geneticAlgorithm(populationNumber1,pm1,pk1, cross,mutate,select,successs,stopp,stopCounter, optimalPathSize, maxErrorRatio) ;
+                                            timer.stop();
 
-            shortestPathSum +=result[result.size()-1];
-            errorRatioSum += errorRatio;
-            timeSum += timer.getTime(Seconds);
-            outputFile << result[result.size()-1] << ";\t" << errorRatio << ";\t" << timer.getTime(Seconds) << ";" "\n";
-            outputFile.flush();
+                                            errorRatio = (result[result.size()-1] / optimalPathSize -1) * 100;
+
+                                            shortestPathSum +=result[result.size()-1];
+                                            errorRatioSum += errorRatio;
+                                            timeSum += timer.getTime(Seconds);
+                                            outputFile << result[result.size()-1] << ";\t" << errorRatio << ";\t" << timer.getTime(Seconds) << ";" <<populationNumber1<< ";" << pm1 << ";" << pk1 << ";"<< crossing<< ";"<< mutation << ";" << selection << ";" << success << ";" << stop << ";" <<stopCounter<<";"<< optimalPathSize << ";" << maxErrorRatio<<"\n";
+                                            outputFile.flush();
+                                        }
+
+
+                                        averageOutputFile << shortestPathSum/testCount <<";"<< errorRatioSum/testCount <<";"<< timeSum/testCount << ";" <<populationNumber1<< ";" << pm1 << ";" << pk1 << ";"<< crossing<< ";"<< mutation << ";" << selection << ";" << success << ";" << stop << ";" <<stopCounter<<";"<< optimalPathSize << ";" << maxErrorRatio<<"\n";
+                                        shortestPathSum = 0;
+                                        errorRatioSum = 0 ;
+                                        timeSum = 0;
+                                        averageOutputFile.flush();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        averageOutputFile << shortestPathSum/testCount <<";"<< errorRatioSum/testCount <<";"<< timeSum/testCount << "\n";
-        shortestPathSum = 0;
-        errorRatioSum = 0 ;
-        timeSum = 0;
-        averageOutputFile.flush();
+
+
+
+
+
+
+//        for(int i = 0 ; i < testCount ; i++)
+//        {
+//            timer.start();
+//            result = TravelingSalesman.geneticAlgorithm(populationNumber,pm,pk, crossingEnum,mutationEnum,selectionEnum,successEnum,stopEnum,stopCounter, optimalPathSize, maxErrorRatio) ;
+//            timer.stop();
+//
+//            errorRatio = (result[result.size()-1] / optimalPathSize -1) * 100;
+//
+//            shortestPathSum +=result[result.size()-1];
+//            errorRatioSum += errorRatio;
+//            timeSum += timer.getTime(Seconds);
+//            outputFile << result[result.size()-1] << ";\t" << errorRatio << ";\t" << timer.getTime(Seconds) << ";" "\n";
+//            outputFile.flush();
+//        }
+//        averageOutputFile << shortestPathSum/testCount <<";"<< errorRatioSum/testCount <<";"<< timeSum/testCount << "\n";
+//        shortestPathSum = 0;
+//        errorRatioSum = 0 ;
+//        timeSum = 0;
+//        averageOutputFile.flush();
+
+        outputFile.close();
+        averageOutputFile.close();
+
+        outputFile.clear();
+        averageOutputFile.clear();
     };
 
 
