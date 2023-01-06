@@ -1,0 +1,3 @@
+C:/Users/kmord/CLionProjects/PEA_1/cmake-build-debug/CMakeFiles/BruteForce.dir
+C:/Users/kmord/CLionProjects/PEA_1/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/kmord/CLionProjects/PEA_1/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,3 @@
+pa561,tsp 10 561 200 0,1 0,9 OX SWP TUR ECH NCH 300 150 2763 No optimal path
+totalCost;error;time;PopulationNumber;pm;pk;cross;mutate;select;success;stop;stopCounter;optimalPathSize;maxErrorRatio
+6901;149,772;183;200;0,3;0,9;OX;INV;DUE;FCH;NCH;300;2763;150

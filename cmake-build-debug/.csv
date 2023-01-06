@@ -1,0 +1,160 @@
+tsp_6_2.txt 10 6 80  { 0 5 1 2 3 4 }
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+84;5.125;125;10;0.9;10
+82;2.875;100;10;0.99;10
+80;0;276;10;0.999;10
+80;0;1004;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+87;8.875;16;10;0;10
+tsp_10.txt 10 10 212  { 0 3 4 2 8 7 6 9 1 5 }
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+349;65;43;10;0.9;10
+307;45.2358;90;10;0.99;10
+270;27.6415;373;10;0.999;10
+261;23.1132;985;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+333;57.4528;17;10;0;10
+tsp_12.txt 10 12 264  { 0 1 8 4 6 2 11 9 7 5 3 10 }
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+422;59.8864;32;10;0.9;10
+399;51.1364;83;10;0.99;10
+378;43.1818;280;10;0.999;10
+357;35.3409;944;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+416;57.5758;17;10;0;10
+tsp_13.txt 10 13 269  { 0 10 3 5 7 9 11 2 6 4 8 1 12 }
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+453;68.6989;32;10;0.9;10
+430;59.8513;87;10;0.99;10
+396;47.2119;275;10;0.999;10
+400;48.6989;924;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+472;75.6877;18;10;0;10
+tsp_14.txt 10 14 282  { 0 10 3 5 7 9 13 11 2 6 4 8 1 12 }
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+492;74.5745;47;10;0.9;10
+474;68.1206;89;10;0.99;10
+446;58.4752;278;10;0.999;10
+435;54.5035;980;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+511;81.2766;17;10;0;10
+tsp_15.txt 10 15 291  { 0 10 3 5 7 9 13 11 2 6 4 8 14 1 12 }
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+510;75.2921;45;10;0.9;10
+510;75.2921;101;10;0.99;10
+475;63.2302;377;10;0.999;10
+457;57.2509;1022;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+544;87.2165;34;10;0;10
+tsp_17.txt 10 17 39  { 0 11 13 2 9 10 1 12 15 14 5 6 3 4 7 8 16 }
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+112;189.487;37;10;0.9;10
+109;180;89;10;0.99;10
+89;129.744;315;10;0.999;10
+78;100.769;951;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+138;255.641;18;10;0;10
+gr17.tsp 10 17 2085 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+3822;83.3189;32;10;0.9;10
+3525;69.0791;226;10;0.99;10
+3292;57.9137;290;10;0.999;10
+3132;50.2398;1246;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+3756;80.1535;20;10;0;10
+gr21.tsp 10 21 2707 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+6197;128.947;47;10;0.9;10
+5974;120.687;98;10;0.99;10
+5633;108.094;303;10;0.999;10
+5425;100.421;1026;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+6564;142.494;21;10;0;10
+gr48.tsp 10 48 5046 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+19166;279.836;44;10;0.9;10
+18387;264.403;132;10;0.99;10
+17293;242.709;390;10;0.999;10
+16822;233.379;1299;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+19094;278.401;26;10;0;10
+gr120.tsp 10 120 6942 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+48654;600.87;72;10;0.9;10
+48030;591.887;184;10;0.99;10
+44834;545.84;607;10;0.999;10
+43980;533.541;1819;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+49426;611.985;42;10;0;10
+si175.tsp 10 175 21407 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+47021;119.654;182;10;0.9;10
+46631;117.832;502;10;0.99;10
+46337;116.458;1571;10;0.999;10
+45811;114.001;5055;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+47087;119.964;105;10;0;10
+gr96.txt 10 96 55209 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+302439;447.808;62;10;0.9;10
+278519;404.482;192;10;0.99;10
+221684;301.537;495;10;0.999;10
+187998;240.521;1571;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+326917;492.145;36;10;0;10
+kroA100.txt 10 100 21282 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+153905;623.17;64;10;0.9;10
+138270;549.706;166;10;0.99;10
+119477;461.402;520;10;0.999;10
+104943;393.11;1832;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+157488;640.007;36;10;0;10
+kroB150.txt 10 150 26130 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+235474;801.166;87;10;0.9;10
+218239;735.205;281;10;0.99;10
+187687;618.282;725;10;0.999;10
+158931;508.233;2456;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+239559;816.799;49;10;0;10
+pr152.txt 10 152 73682 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+887976;1105.15;115;10;0.9;10
+764516;937.59;202;10;0.99;10
+588611;698.854;656;10;0.999;10
+462965;528.33;2392;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+945204;1182.82;48;10;0;10
+ftv170.txt 10 171 2755 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+24992;807.169;97;10;0.9;10
+24652;794.82;231;10;0.99;10
+24370;784.588;734;10;0.999;10
+24021;771.931;2307;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+25065;809.811;53;10;0;10
+kroB200.txt 10 200 29368 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+312388;963.702;111;10;0.9;10
+293400;899.049;258;10;0.99;10
+258720;780.962;800;10;0.999;10
+221834;655.361;2650;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+314002;969.201;58;10;0;10
+rbg323.txt 10 323 1326 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+6127;362.104;170;10;0.9;10
+6017;353.771;473;10;0.99;10
+5934;347.557;1229;10;0.999;10
+5864;342.293;3717;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+6147;363.597;86;10;0;10
+pa561.tsp 10 561 2763 No optimal path
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Geometrical
+35628;1189.47;302;10;0.9;10
+35451;1183.08;651;10;0.99;10
+35473;1183.88;2082;10;0.999;10
+35074;1169.42;7103;10;0.9999;10
+totalCost;error;time;InitialTemperature;coolingRatio;epochSize;Boltzman
+35312;1178.06;160;10;0;10
