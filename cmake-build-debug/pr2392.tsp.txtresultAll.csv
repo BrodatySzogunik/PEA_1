@@ -1,0 +1,6 @@
+pr2392.tsp.txt 2 2392 200 0.3 0.9 OX INV DUE FCH NCH 150 0 378032 No optimal path
+totalCost;error;time;PopulationNumber;pm;pk;cross;mutate;select;success;stop;stopCounter;optimalPathSize;maxErrorRatio
+10437983;	2661.14;	301;200;0.3;0.9;OX;SWP;DUE;FCH;NCH;150;378032;0
+10614206;	2707.75;	301;200;0.3;0.9;OX;SWP;DUE;FCH;NCH;150;378032;0
+10639738;	2714.51;	301;200;0.3;0.9;OX;INV;DUE;FCH;NCH;150;378032;0
+10491815;	2675.38;	301;200;0.3;0.9;OX;INV;DUE;FCH;NCH;150;378032;0

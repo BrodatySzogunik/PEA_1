@@ -1,0 +1,6 @@
+gr48,tsp,txt 5 48 200 0,1 0,9 OX SWP TUR ECH NCH 1000 0 5046 No optimal path
+totalCost;error;time;PopulationNumber;pm;pk;cross;mutate;select;success;stop;stopCounter;optimalPathSize;maxErrorRatio
+5605;11,09;1;100;0,1;0,9;OX;SWP;DUE;FCH;NCH;1000;5046;0
+5697;12,9013;1;100;0,1;0,7;OX;SWP;DUE;FCH;NCH;1000;5046;0
+5783;14,6096;1;100;0,1;0,6;OX;SWP;DUE;FCH;NCH;1000;5046;0
+5592;10,8363;1;100;0,1;0,5;OX;SWP;DUE;FCH;NCH;1000;5046;0

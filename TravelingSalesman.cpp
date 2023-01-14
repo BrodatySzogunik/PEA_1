@@ -156,7 +156,7 @@ std::vector<int> TSP::geneticAlgorithm(int populationSize,double pm, double pk, 
         noChangeCounter++;
 
         timer.stop();
-        if(timer.getTime(Seconds) > 599){
+        if(timer.getTime(Seconds) > 300){
             break;
         }
     }while((stop == STOP::GEN && i < (*this->vertexNumber * 5))||

@@ -181,14 +181,14 @@ void Test::runTest() {
 
 
         TravelingSalesman.ReadFromFile(fileName);
-        int populationNumbers[] = { 100,200};
-        double pms [] = {0.1,0.3};
-        double pks [] = { 0.7,0.9};
-        TSP::CROSS crossIt [] = {TSP::CROSS::OX, TSP::CROSS::PMX};
-        TSP::MUTATION mutateIt [] = {TSP::MUTATION::SWP };
-        TSP::SELECT selectIt [] = { TSP::SELECT::DUE, TSP::SELECT::TUR};
-        TSP::SUCCESS successIt [] = { TSP::SUCCESS::FCH, TSP::SUCCESS::ECH};
-        TSP::STOP stopIt [] = { TSP::STOP::NCH, TSP::STOP::GEN};
+        int populationNumbers[] = { 200};
+        double pms [] = {0.3};
+        double pks [] = { 0.9,};
+        TSP::CROSS crossIt [] = {TSP::CROSS::OX};
+        TSP::MUTATION mutateIt [] = {TSP::MUTATION::SWP ,TSP::MUTATION::INV};
+        TSP::SELECT selectIt [] = { TSP::SELECT::DUE};
+        TSP::SUCCESS successIt [] = { TSP::SUCCESS::FCH};
+        TSP::STOP stopIt [] = { TSP::STOP::NCH};
 
 
 
@@ -240,7 +240,7 @@ void Test::runTest() {
 
 
 
-
+//
 //        for(int i = 0 ; i < testCount ; i++)
 //        {
 //            timer.start();
@@ -252,20 +252,20 @@ void Test::runTest() {
 //            shortestPathSum +=result[result.size()-1];
 //            errorRatioSum += errorRatio;
 //            timeSum += timer.getTime(Seconds);
-//            outputFile << result[result.size()-1] << ";\t" << errorRatio << ";\t" << timer.getTime(Seconds) << ";" "\n";
+//            outputFile << result[result.size()-1] << ";\t" << errorRatio << ";\t" << timer.getTime(Seconds) << ";" <<populationNumber<< ";" << pm << ";" << pk << ";"<< crossing<< ";"<< mutation << ";" << selection << ";" << success << ";" << stop << ";" <<stopCounter<<";"<< optimalPathSize << ";" << maxErrorRatio<<"\n";
 //            outputFile.flush();
 //        }
-//        averageOutputFile << shortestPathSum/testCount <<";"<< errorRatioSum/testCount <<";"<< timeSum/testCount << "\n";
+//        averageOutputFile << shortestPathSum/testCount <<";"<< errorRatioSum/testCount <<";"<< timeSum/testCount << ";" <<populationNumber<< ";" << pm << ";" << pk << ";"<< crossing<< ";"<< mutation << ";" << selection << ";" << success << ";" << stop << ";" <<stopCounter<<";"<< optimalPathSize << ";" << maxErrorRatio<<"\n";
 //        shortestPathSum = 0;
 //        errorRatioSum = 0 ;
 //        timeSum = 0;
 //        averageOutputFile.flush();
-
-        outputFile.close();
-        averageOutputFile.close();
-
-        outputFile.clear();
-        averageOutputFile.clear();
+//
+//        outputFile.close();
+//        averageOutputFile.close();
+//
+//        outputFile.clear();
+//        averageOutputFile.clear();
     };
 
 
